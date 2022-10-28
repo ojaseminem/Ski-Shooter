@@ -1,21 +1,24 @@
 ﻿using UnityEngine;
 
-public class Tile : MonoBehaviour
+namespace Tiles
 {
-    public GameObject[] gemContainers;
-
-    private void OnEnable()
+    public class Tile : MonoBehaviour
     {
-        foreach(GameObject container in gemContainers)
+        public GameObject[] gemContainers;
+
+        private void OnEnable()
         {
-            int i = Random.Range(0, 3);
-            if (i > 0)
-                container.SetActive(false);
-            else
+            foreach(GameObject container in gemContainers)
             {
-                container.SetActive(true);
-                foreach (Transform gem in container.transform)
-                    gem.gameObject.SetActive(true);
+                int i = Random.Range(0, 3);
+                if (i > 0)
+                    container.SetActive(false);
+                else
+                {
+                    container.SetActive(true);
+                    foreach (Transform gem in container.transform)
+                        gem.gameObject.SetActive(true);
+                }
             }
         }
     }

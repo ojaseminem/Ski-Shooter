@@ -1,68 +1,71 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class TileManager : MonoBehaviour
+namespace Tiles
 {
-    private List<GameObject> activeTiles;
-    public GameObject[] tilePrefabs;
-
-    public float tileLength = 30;
-    public int numberOfTiles = 3;
-    public int totalNumOfTiles = 8;
-
-    public float zSpawn = 0;
-
-    public Transform playerTransform;
-
-    private int previousIndex;
-
-    void Start()
+    public class TileManager : MonoBehaviour
     {
-        activeTiles = new List<GameObject>();
-        for (int i = 0; i < numberOfTiles; i++)
-        {
-            if(i==0)
-                SpawnTile();
-            else
-                SpawnTile(Random.Range(0, totalNumOfTiles));
-        }
+        private List<GameObject> _activeTiles;
+        public GameObject[] tilePrefabs;
 
-    }
-    void Update()
-    {
-        if(playerTransform.position.z - 30 >= zSpawn - (numberOfTiles * tileLength))
-        {
-            int index = Random.Range(0, totalNumOfTiles);
-            while(index == previousIndex)
-                index = Random.Range(0, totalNumOfTiles);
+        public float tileLength = 30;
+        public int numberOfTiles = 3;
+        public int totalNumOfTiles = 8;
 
-            DeleteTile();
-            SpawnTile(index);
+        public float zSpawn = 0;
+
+        public Transform playerTransform;
+
+        private int _previousIndex;
+
+        private void Start()
+        {
+            _activeTiles = new List<GameObject>();
+            for (int i = 0; i < numberOfTiles; i++)
+            {
+                if(i==0)
+                    SpawnTile();
+                else
+                    SpawnTile(Random.Range(0, totalNumOfTiles));
+            }
+
         }
+        private void Update()
+        {
+            if(playerTransform.position.z - 30 >= zSpawn - (numberOfTiles * tileLength))
+            {
+                int index = Random.Range(0, totalNumOfTiles);
+                while(index == _previousIndex)
+                    index = Random.Range(0, totalNumOfTiles);
+
+                DeleteTile();
+                SpawnTile(index);
+            }
             
-    }
+        }
 
-    public void SpawnTile(int index = 0)
-    {
-        GameObject tile = tilePrefabs[index];
-        if (tile.activeInHierarchy)
-            tile = tilePrefabs[index + 8];
+        public void SpawnTile(int index = 0)
+        {
+            GameObject tile = tilePrefabs[index];
+            if (tile.activeInHierarchy)
+                tile = tilePrefabs[index + 8];
 
-        if(tile.activeInHierarchy)
-            tile = tilePrefabs[index + 16];
+            if(tile.activeInHierarchy)
+                tile = tilePrefabs[index + 16];
 
-        tile.transform.position = Vector3.forward * zSpawn;
-        tile.transform.rotation = Quaternion.identity;
-        tile.SetActive(true);
+            tile.transform.position = Vector3.forward * zSpawn;
+            tile.transform.rotation = Quaternion.identity;
+            tile.SetActive(true);
 
-        activeTiles.Add(tile);
-        zSpawn += tileLength;
-        previousIndex = index;
-    }
+            _activeTiles.Add(tile);
+            zSpawn += tileLength;
+            _previousIndex = index;
+        }
 
-    private void DeleteTile()
-    {
-        activeTiles[0].SetActive(false);
-        activeTiles.RemoveAt(0);
+        private void DeleteTile()
+        {
+            _activeTiles[0].SetActive(false);
+            _activeTiles.RemoveAt(0);
+        }
     }
 }

@@ -2,12 +2,11 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Game
+namespace Gameplay
 {
     public class GameEvents : MonoBehaviour
     {
         public Button btnPause;
-        public GameObject gameOverPanel;
 
         private void Update()
         {
@@ -15,14 +14,7 @@ namespace Game
                 return;
 
             if (PlayerManager.gameOver)
-            {
-                gameOverPanel.SetActive(true);
                 btnPause.interactable = false;
-            }
-            else
-            {
-                btnPause.interactable = true;
-            }
         }
         public void ReplayGame()
         {
