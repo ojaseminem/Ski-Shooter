@@ -32,12 +32,17 @@ namespace Gameplay
         {
             coinText.text = coinCount.ToString();
             diamondText.text = diamondCount.ToString();
-        
+
+            if (coinCount <= 0)
+                coinCount = 0;
+            if (diamondCount <= 0)
+                diamondCount = 0;
+            
             if (gameOver)
             {
-                Time.timeScale = 0;
+                //Time.timeScale = 0;
                 //gameOverPanel.SetActive(true);
-                Destroy(gameObject);
+                //Destroy(gameObject);
             }
 
             if (SwipeManager.tap  && !isGameStarted)

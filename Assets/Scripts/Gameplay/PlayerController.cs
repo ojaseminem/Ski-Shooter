@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -29,6 +30,9 @@ namespace Gameplay
         private bool _isSliding = false;
 
         public float slideDuration = 1.5f;
+        
+        private bool _isShooting = false;
+        
 
         private bool _toggle = false;
         
@@ -38,6 +42,9 @@ namespace Gameplay
         private static readonly int JumpBlend = Animator.StringToHash("jumpBlend");
         private static readonly int Jump1 = Animator.StringToHash("jump");
         private static readonly int SlideBlend = Animator.StringToHash("slideBlend");
+        private static readonly int ShootBlend = Animator.StringToHash("shootBlend");
+        private static readonly int IsShooting = Animator.StringToHash("isShooting");
+        private static readonly int Dead = Animator.StringToHash("dead");
 
         private void Start()
         {
@@ -80,10 +87,10 @@ namespace Gameplay
 
             if (isGrounded)
             {
-                if (SwipeManager.swipeUp)
+                if (SwipeManager.swipeUp && !_isShooting)
                     Jump();
 
-                if (SwipeManager.swipeDown && !_isSliding)
+                if (SwipeManager.swipeDown && !_isSliding && !_isShooting)
                     StartCoroutine(Slide());
             }
             else
@@ -99,13 +106,13 @@ namespace Gameplay
             _controller.Move(_velocity * Time.deltaTime);
 
             //Gather the inputs on which lane we should be
-            if (SwipeManager.swipeRight)
+            if (SwipeManager.swipeRight && !_isShooting)
             {
                 _desiredLane++;
                 if (_desiredLane == 3)
                     _desiredLane = 2;
             }
-            if (SwipeManager.swipeLeft)
+            if (SwipeManager.swipeLeft && !_isShooting)
             {
                 _desiredLane--;
                 if (_desiredLane == -1)
@@ -165,6 +172,55 @@ namespace Gameplay
             _controller.height = 2;
 
             _isSliding = false;
+        }
+
+        public void Shoot()
+        {
+            if (_isShooting || _isSliding || !isGrounded) return;
+            
+            StartCoroutine(Shoot());
+
+            IEnumerator Shoot()
+            {
+                _isShooting = true;
+                var tempBlend = Random.Range(0, 2);
+                animator.SetFloat(ShootBlend, tempBlend);
+                animator.SetBool(IsShooting, true);
+                yield return new WaitForSeconds(1.3f);
+                animator.SetBool(IsShooting, false);
+                _isShooting = false;
+                StopCoroutine(Shoot());
+            }
+        }
+
+        private void Death()
+        {
+            animator.SetTrigger(Dead);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Collectable_BlueFlag"))
+            {
+                // + 2 diamonds, + 8 coins
+                PlayerManager.coinCount += 8;
+                PlayerManager.diamondCount += 2;
+            }
+
+            if (other.CompareTag("Collectable_RedFlag"))
+            {
+                // - 4 diamonds, - 12 coins
+                PlayerManager.coinCount -= 12;
+                PlayerManager.diamondCount -= 4;
+            }
+
+            if (other.CompareTag("ColliderOfDeath"))
+            {
+                //Game Over
+                Death();
+                forwardSpeed = maxSpeed = 0;
+                PlayerManager.gameOver = true;
+            }
         }
     }
 }
