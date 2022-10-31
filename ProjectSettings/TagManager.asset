@@ -11,6 +11,8 @@ TagManager:
   - Gems
   - Obstacle
   - Collectable_Coin
+  - Bullet
+  - ColliderSnowBoulder
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
-  - 
+  - Player
+  - BoulderShattered
   - 
   - 
   - 

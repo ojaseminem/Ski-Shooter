@@ -33,7 +33,6 @@ namespace Gameplay
         
         private bool _isShooting = false;
         
-
         private bool _toggle = false;
         
         private static readonly int IsGameStarted = Animator.StringToHash("isGameStarted");
@@ -50,6 +49,8 @@ namespace Gameplay
         {
             _controller = GetComponent<CharacterController>();
             Time.timeScale = 1.2f;
+            //Ignore collision between Player and Snow Boulder
+            Physics.IgnoreLayerCollision(7, 8);
         }
 
         private void FixedUpdate()
@@ -197,7 +198,7 @@ namespace Gameplay
         {
             animator.SetTrigger(Dead);
         }
-
+        
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Collectable_BlueFlag"))
@@ -217,6 +218,16 @@ namespace Gameplay
             if (other.CompareTag("ColliderOfDeath"))
             {
                 //Game Over
+                Death();
+                TimeCalculator.instance.EndTimer();
+                forwardSpeed = maxSpeed = 0;
+                PlayerManager.gameOver = true;
+            }
+            
+            if (other.CompareTag("ColliderSnowBoulder"))
+            {
+                //Game Over
+                PlayerManager.gameOver = true;
                 Death();
                 forwardSpeed = maxSpeed = 0;
                 PlayerManager.gameOver = true;

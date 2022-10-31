@@ -48,10 +48,16 @@ namespace Tiles
         {
             GameObject tile = tilePrefabs[index];
             if (tile.activeInHierarchy)
-                tile = tilePrefabs[index + 8];
+            {
+                var random = Random.Range(0, tilePrefabs.Length);
+                tile = tilePrefabs[random];
+            }
 
             if(tile.activeInHierarchy)
-                tile = tilePrefabs[index + 16];
+            {
+                var random = Random.Range(0, tilePrefabs.Length);
+                tile = tilePrefabs[random];
+            }
 
             tile.transform.position = Vector3.forward * zSpawn;
             tile.transform.rotation = Quaternion.identity;

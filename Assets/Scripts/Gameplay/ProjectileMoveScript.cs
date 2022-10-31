@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,10 +44,14 @@ public class ProjectileMoveScript : MonoBehaviour {
 			_rb.position += (transform.forward + _offset)  * (speed * Time.deltaTime);
 	}
 
-	private void OnCollisionEnter (Collision co) 
+	private DestroyableObstacleHandler _destroyableObstacleHandler;
+	
+	private void OnTriggerEnter(Collider other)
 	{
-		if (co.gameObject.tag != "Bullet" && !_collided) {
+		if (!other.gameObject.CompareTag("Bullet") && other.gameObject.CompareTag("ColliderSnowBoulder") && !_collided) {
 			_collided = true;
+
+			other.gameObject.GetComponent<DestroyableObstacleHandler>().Destroy();
 			
 			if (shotSfx != null && GetComponent<AudioSource>()) {
 				GetComponent<AudioSource> ().PlayOneShot (hitSfx);
@@ -66,12 +71,12 @@ public class ProjectileMoveScript : MonoBehaviour {
 			speed = 0;
 			GetComponent<Rigidbody> ().isKinematic = true;
 
-			ContactPoint contact = co.contacts [0];
-			Quaternion rot = Quaternion.FromToRotation (Vector3.up, contact.normal);
-			Vector3 pos = contact.point;
+			var contact = other.ClosestPoint(transform.position);
+			Quaternion rot = Quaternion.FromToRotation (Vector3.up, contact);
+			Vector3 pos = contact;
 
 			if (hitPrefab != null) {
-				var hitVFX = Instantiate (hitPrefab, pos, rot) as GameObject;
+				var hitVFX = Instantiate (hitPrefab, pos, rot);
 
 				var ps = hitVFX.GetComponent<ParticleSystem> ();
 				if (ps == null) {

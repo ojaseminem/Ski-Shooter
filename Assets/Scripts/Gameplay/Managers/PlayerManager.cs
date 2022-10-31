@@ -7,6 +7,7 @@ namespace Gameplay
     {
         public static bool gameOver;
         public GameObject gameOverPanel;
+        public TextMeshProUGUI diamondCountFinal, coinCountFinal;
 
         public static bool isGameStarted;
         public GameObject startingText;
@@ -18,7 +19,7 @@ namespace Gameplay
 
         public static bool isGamePaused;
 
-        public GameObject camInitial, camMain;
+        public GameObject camInitial, camMain, camDeath;
 
         private void Start()
         {
@@ -40,8 +41,11 @@ namespace Gameplay
             
             if (gameOver)
             {
-                //Time.timeScale = 0;
-                //gameOverPanel.SetActive(true);
+                camMain.SetActive(false);
+                camDeath.SetActive(true);
+                gameOverPanel.SetActive(true);
+                diamondCountFinal.text = diamondCount.ToString();
+                coinCountFinal.text = coinCount.ToString();
                 //Destroy(gameObject);
             }
 
@@ -50,6 +54,7 @@ namespace Gameplay
                 camInitial.SetActive(false);
                 camMain.SetActive(true);
                 isGameStarted = true;
+                TimeCalculator.instance.BeginTimer();
                 Destroy(startingText);
             }
         }
