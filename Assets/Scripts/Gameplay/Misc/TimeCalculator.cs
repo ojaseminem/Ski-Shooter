@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-namespace Gameplay
+namespace Gameplay.Misc
 {
     public class TimeCalculator : MonoBehaviour
     {

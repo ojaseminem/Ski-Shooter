@@ -11,8 +11,6 @@ Material:
   m_Shader: {fileID: 4800000, guid: e52bb9af1fde8f84e978e6e27e785bf8, type: 3}
   m_ValidKeywords:
   - USE_AL
-  - USE_LS
-  - USE_RT
   - USE_WC
   - _TESSELLATION_EDGE
   m_InvalidKeywords: []
@@ -253,7 +251,7 @@ Material:
     - _Emission: 0.25
     - _FishAngle: 0
     - _FishIntensity: 1.5
-    - _FishMaskIntensity: 0.442
+    - _FishMaskIntensity: 0
     - _FishScale: 0.32
     - _FishSpeed: 1
     - _FlowMultiplier: 0.18
@@ -288,7 +286,7 @@ Material:
     - _NormalMultiplier: 0.45
     - _NormalRTDepth: 0.18
     - _NormalRTStrength: 2.2
-    - _NormalScale: 0.21
+    - _NormalScale: 0.34
     - _NormalScale0: 1
     - _NormalScale1: 1
     - _NormalScale2: 1
@@ -328,13 +326,13 @@ Material:
     - _TransitionScale: 1
     - _TransparencyValue: 1
     - _USEINTER: 0
-    - _USERT: 1
+    - _USERT: 0
     - _USETESS: 0
     - _USEWC: 1
     - _UVSec: 0
     - _UpVector: 0.47
     - _UseAmbientLight: 1
-    - _UseSunReflection: 1
+    - _UseSunReflection: 0
     - _UseVR: 0
     - _WireframeSmoothing: 1
     - _WireframeThickness: 1
@@ -352,7 +350,7 @@ Material:
     - _ParalaxColor: {r: 0, g: 0.045685723, b: 0.184, a: 1}
     - _ParallaxColor: {r: 1, g: 1, b: 1, a: 1}
     - _ParallaxStrength: {r: 0, g: 0.01, b: -0.05, a: -0.08}
-    - _ProjectedShadowColor: {r: 0.1745283, g: 0.5599734, b: 1, a: 1}
+    - _ProjectedShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectionColor: {r: 0, g: 0.099333376, b: 0.14899999, a: 0.8}
     - _RimColor: {r: 0.03, g: 0.03, b: 0.03, a: 0}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}

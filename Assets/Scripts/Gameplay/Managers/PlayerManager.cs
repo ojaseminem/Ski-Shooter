@@ -1,5 +1,8 @@
-﻿using TMPro;
+﻿using Gameplay.Managers;
+using Gameplay.Misc;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Gameplay
 {
@@ -18,6 +21,7 @@ namespace Gameplay
         public TextMeshProUGUI diamondText;
 
         public static bool isGamePaused;
+        public Button btnPause;
 
         public GameObject camInitial, camMain, camDeath;
 
@@ -27,8 +31,11 @@ namespace Gameplay
             diamondCount = 0;
             Time.timeScale = 1;
             gameOver = isGameStarted = isGamePaused= false;
+            Application.targetFrameRate = 30;
         }
 
+        private bool _callGameStarted, _callGameOver;
+        
         private void Update()
         {
             coinText.text = coinCount.ToString();
@@ -41,22 +48,35 @@ namespace Gameplay
             
             if (gameOver)
             {
-                camMain.SetActive(false);
-                camDeath.SetActive(true);
-                gameOverPanel.SetActive(true);
-                diamondCountFinal.text = diamondCount.ToString();
-                coinCountFinal.text = coinCount.ToString();
-                //Destroy(gameObject);
+                _callGameOver = true;
+                if (_callGameOver) GameOver();
             }
 
             if (SwipeManager.tap  && !isGameStarted)
             {
-                camInitial.SetActive(false);
-                camMain.SetActive(true);
-                isGameStarted = true;
-                TimeCalculator.instance.BeginTimer();
-                Destroy(startingText);
+                _callGameStarted = true;
+                if (_callGameStarted) GameStarted();
             }
+        }
+
+        private void GameStarted()
+        {
+            _callGameStarted = false;
+            camInitial.SetActive(false);
+            camMain.SetActive(true);
+            isGameStarted = true;
+            TimeCalculator.instance.BeginTimer();
+            Destroy(startingText);
+        }
+        private void GameOver()
+        {
+            _callGameOver = false;
+            btnPause.interactable = false;
+            camMain.SetActive(false);
+            camDeath.SetActive(true);
+            gameOverPanel.SetActive(true);
+            diamondCountFinal.text = diamondCount.ToString();
+            coinCountFinal.text = coinCount.ToString();
         }
     }
 }
