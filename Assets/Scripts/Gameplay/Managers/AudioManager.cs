@@ -1,5 +1,7 @@
 ﻿using Gameplay.Misc;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Gameplay
 {
@@ -8,19 +10,14 @@ namespace Gameplay
         public static AudioManager instance;
         public Sound[] sounds;
 
+        public Slider volumeSlider;
+        
         void Awake()
         {
-            if(instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
-
+            instance = this;
+            
+            SetVolume();
+            
             foreach(Sound s in sounds)
             {
                 s.source = gameObject.AddComponent<AudioSource>();
@@ -30,8 +27,16 @@ namespace Gameplay
                 s.source.pitch = s.pitch;
             }
 
-            PlaySound("MainTheme");
-        
+            if (SceneManager.GetActiveScene().name == "MenuScene")
+            {
+                PlaySound("SFX_BG_Menu");
+                PlaySound("SFX_Snow");
+            }
+            if (SceneManager.GetActiveScene().name == "GameScene")
+            {
+                PlaySound("SFX_BG_Gameplay");
+                PlaySound("SFX_Snow");
+            }
         }
 
         public void PlaySound(string name)
@@ -41,6 +46,27 @@ namespace Gameplay
                 if (s.name == name)
                     s.source.Play();
             }
+        }
+
+        public void PauseSound(string name)
+        {
+            foreach (Sound s in sounds)
+            {
+                if (s.name == name)
+                    s.source.Pause();
+            }
+        }
+
+        private void SetVolume()
+        {
+            AudioListener.volume = PlayerPrefs.GetFloat("OverallVolume", 1); 
+            volumeSlider.value = AudioListener.volume;
+        }
+        
+        public void UpdateVolume()
+        {
+            AudioListener.volume = volumeSlider.value;
+            PlayerPrefs.SetFloat("OverallVolume", volumeSlider.value);
         }
     }
 }

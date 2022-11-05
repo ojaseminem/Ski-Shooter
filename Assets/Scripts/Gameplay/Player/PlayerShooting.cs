@@ -10,6 +10,7 @@ namespace Gameplay.Player
         public void ShootProjectile()
         {
             Instantiate(bulletProjectile, firePoint.transform.position, firePoint.transform.rotation);
+            AudioManager.instance.PlaySound("SFX_WeaponShot");
         }
     }
 }

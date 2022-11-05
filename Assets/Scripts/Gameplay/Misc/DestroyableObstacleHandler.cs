@@ -27,5 +27,11 @@ namespace Gameplay.Misc
                 boulder.SetActive(true);
             }
         }
+
+        public void EnableBoulder()
+        {
+            transform.GetComponent<SphereCollider>().enabled = true;
+            boulder.SetActive(true);
+        }
     }
 }

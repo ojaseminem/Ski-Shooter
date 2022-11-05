@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Gameplay.Player;
 using UnityEngine;
 
 namespace Gameplay.Misc
@@ -21,13 +22,19 @@ namespace Gameplay.Misc
             transform.GetComponent<BoxCollider>().enabled = false;
             if (coinOrDiamond == 0)
             {
-                PlayerManager.coinCount += 1;
-                //FindObjectOfType<AudioManager>().PlaySound("CoinPickUp");
+                if(PlayerController.instance.canCollectCollectables)
+                {
+                    PlayerManager.instance.PlusCoin(+1, "+");
+                    AudioManager.instance.PlaySound("SFX_CoinCollected");
+                }
             }
             else if(coinOrDiamond == 1)
             {
-                PlayerManager.diamondCount += 1;
-                //FindObjectOfType<AudioManager>().PlaySound("DiamondPickUp");
+                if(PlayerController.instance.canCollectCollectables)
+                {
+                    PlayerManager.instance.PlusDiamond(+1, "+");
+                    AudioManager.instance.PlaySound("SFX_DiamondCollected");
+                }
             }
 
             StartCoroutine(PickupEffectAndRespawn());
@@ -36,7 +43,8 @@ namespace Gameplay.Misc
             {
                 var tempScale = transform.localScale;
                 transform.localScale = new Vector3(.01f, .01f, .01f);
-                Instantiate(pickupEffect, transform.position, transform.rotation);
+                var pickedUpEffect = Instantiate(pickupEffect, transform.position, transform.rotation);
+                Destroy(pickedUpEffect, 2f);
                 yield return new WaitForSeconds(.5f);
                 transform.GetComponent<BoxCollider>().enabled = true;
                 transform.localScale = tempScale;

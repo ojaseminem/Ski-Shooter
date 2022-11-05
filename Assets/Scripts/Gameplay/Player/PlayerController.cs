@@ -35,6 +35,7 @@ namespace Gameplay.Player
         private bool _isShooting = false;
         
         private bool _toggle = false;
+        public bool canCollectCollectables = false;
         
         private static readonly int IsGameStarted = Animator.StringToHash("isGameStarted");
         private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
@@ -52,6 +53,7 @@ namespace Gameplay.Player
             Time.timeScale = 1.2f;
             //Ignore collision between Player and Snow Boulder
             Physics.IgnoreLayerCollision(7, 8);
+            canCollectCollectables = true;
         }
 
         private void FixedUpdate()
@@ -149,6 +151,7 @@ namespace Gameplay.Player
             var tempBlend = Random.Range(0, 2);
             animator.SetFloat(JumpBlend, tempBlend);
             animator.SetTrigger(Jump1);
+            AudioManager.instance.PlaySound("SFX_PlayerJump");
             _controller.center = new Vector3(0, 1, 0);
             _controller.height = 1.95f;
             _isSliding = false;
@@ -163,6 +166,7 @@ namespace Gameplay.Player
             animator.SetFloat(SlideBlend, tempBlend);
             animator.SetBool(IsSliding, true);
             yield return new WaitForSeconds(0.25f/ Time.timeScale);
+            AudioManager.instance.PlaySound("SFX_PlayerSlide");
             _controller.center = new Vector3(0, .5f, 0);
             _controller.height = 1;
 
@@ -188,50 +192,65 @@ namespace Gameplay.Player
                 var tempBlend = Random.Range(0, 2);
                 animator.SetFloat(ShootBlend, tempBlend);
                 animator.SetBool(IsShooting, true);
-                yield return new WaitForSeconds(1.3f);
+                yield return new WaitForSeconds(1f);
                 animator.SetBool(IsShooting, false);
                 _isShooting = false;
                 StopCoroutine(Shoot());
             }
         }
 
-        private void Death()
-        {
-            animator.SetTrigger(Dead);
-        }
-        
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Collectable_BlueFlag"))
             {
-                // + 2 diamonds, + 8 coins
-                PlayerManager.coinCount += 8;
-                PlayerManager.diamondCount += 2;
+                if(canCollectCollectables)
+                {
+                    PlayerManager.instance.PlusCoin(+8, "+");
+                    PlayerManager.instance.PlusDiamond(+4, "+");
+
+                    var rand = Random.Range(0, 2);
+                    if(rand == 0)
+                        AudioManager.instance.PlaySound("SFX_CoinCollected");
+
+                    else if(rand == 1)
+                        AudioManager.instance.PlaySound("SFX_DiamondCollected");
+                }
             }
 
             if (other.CompareTag("Collectable_RedFlag"))
             {
-                // - 4 diamonds, - 12 coins
-                PlayerManager.coinCount -= 12;
-                PlayerManager.diamondCount -= 4;
+                if(canCollectCollectables)
+                {
+                    PlayerManager.instance.PlusCoin(-12, "-");
+                    PlayerManager.instance.PlusDiamond(-6, "-");
+                }
             }
 
             if (other.CompareTag("ColliderOfDeath"))
             {
-                //Game Over
-                Death();
+                other.GetComponent<BoxCollider>().enabled = false;
+                canCollectCollectables = false;
+                animator.SetTrigger(Dead);
                 TimeCalculator.instance.EndTimer();
                 forwardSpeed = maxSpeed = 0;
                 PlayerManager.gameOver = true;
+                AudioManager.instance.PauseSound("SFX_BG_Gameplay");
+                AudioManager.instance.PauseSound("SFX_Skiing");
+                AudioManager.instance.PlaySound("SFX_PlayerDeath");
             }
             
             if (other.CompareTag("ColliderSnowBoulder"))
             {
-                //Game Over
+                other.GetComponent<SphereCollider>().enabled = false;
+                print("a");
+                canCollectCollectables = false;
                 PlayerManager.gameOver = true;
                 TimeCalculator.instance.EndTimer();
-                Death();
+                animator.SetTrigger(Dead);
                 forwardSpeed = maxSpeed = 0;
+                AudioManager.instance.PauseSound("SFX_BG_Gameplay");
+                AudioManager.instance.PauseSound("SFX_Skiing");
+                AudioManager.instance.PlaySound("SFX_PlayerDeath");
                 PlayerManager.gameOver = true;
             }
         }

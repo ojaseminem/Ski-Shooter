@@ -9,8 +9,6 @@ namespace Gameplay.Misc
 		public float speed;
 		public GameObject muzzlePrefab;
 		public GameObject hitPrefab;
-		public AudioClip shotSfx;
-		public AudioClip hitSfx;
 		public List<GameObject> trails;
 
 		private float _speedRandomness;
@@ -21,7 +19,7 @@ namespace Gameplay.Misc
 		private void Start () {	
 			_rb = GetComponent <Rigidbody> ();
 		
-			Destroy(gameObject, 5f);
+			Destroy(gameObject, 2f);
 
 			if (muzzlePrefab != null) {
 				var muzzleVFX = Instantiate (muzzlePrefab, transform.position, Quaternion.identity);
@@ -33,10 +31,6 @@ namespace Gameplay.Misc
 					var psChild = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
 					Destroy (muzzleVFX, psChild.main.duration);
 				}
-			}
-
-			if (shotSfx != null && GetComponent<AudioSource>()) {
-				GetComponent<AudioSource> ().PlayOneShot (shotSfx);
 			}
 		}
 
@@ -53,10 +47,7 @@ namespace Gameplay.Misc
 				_collided = true;
 
 				other.gameObject.GetComponent<DestroyableObstacleHandler>().Destroy();
-			
-				if (shotSfx != null && GetComponent<AudioSource>()) {
-					GetComponent<AudioSource> ().PlayOneShot (hitSfx);
-				}
+				AudioManager.instance.PlaySound("SFX_BoulderDestroyed");
 
 				if (trails.Count > 0) {
 					for (int i = 0; i < trails.Count; i++) {
