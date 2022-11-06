@@ -15,7 +15,8 @@ namespace Gameplay.Misc
 
         public static bool timerGoing;
 
-        private float _elapsedTime;
+        [HideInInspector]
+        public float elapsedTime;
 
         private void Awake()
         {
@@ -30,7 +31,7 @@ namespace Gameplay.Misc
         public void BeginTimer()
         {
             timerGoing = true;
-            _elapsedTime = 0f;
+            elapsedTime = 0f;
 
             StartCoroutine(UpdateTimer());
         }
@@ -44,8 +45,8 @@ namespace Gameplay.Misc
         {
             while (timerGoing)
             {
-                _elapsedTime += Time.deltaTime;
-                _timeSpan = TimeSpan.FromSeconds(_elapsedTime);
+                elapsedTime += Time.deltaTime;
+                _timeSpan = TimeSpan.FromSeconds(elapsedTime);
                 string timePlayingText = _timeSpan.ToString("mm' : 'ss' . 'ff");
                 timeCounter.text = timePlayingText;
 
